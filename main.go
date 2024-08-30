@@ -8,6 +8,7 @@ import (
 
 	"github.com/stripe/stripe-go/v79"
 	"github.com/stripe/stripe-go/v79/customer"
+	"github.com/stripe/stripe-go/v79/paymentintent"
 )
 
 func main() {
@@ -28,10 +29,21 @@ func main() {
 		},
 	}
 
-	c, err := customer.New(&params)
+	_, err := customer.New(&params)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(c)
 
+	paramsPaymentIntent := stripe.PaymentIntentParams{
+		Amount:   stripe.Int64(1099),
+		Currency: stripe.String(string(stripe.CurrencyPLN)),
+		AutomaticPaymentMethods: &stripe.PaymentIntentAutomaticPaymentMethodsParams{
+			Enabled: stripe.Bool(true),
+		},
+	}
+	result, err := paymentintent.New(&paramsPaymentIntent)
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(result)
 }
